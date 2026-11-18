@@ -1,0 +1,2900 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MercaGo - Tu supermercado en línea</title>
+
+<style>
+:root {
+    --green: #1F7A4D;
+    --green-dark: #145A38;
+    --mint: #EAF5EE;
+    --orange: #FF9A3D;
+    --text: #18221D;
+    --muted: #6D7A73;
+    --bg: #F7F8F6;
+    --white: #FFFFFF;
+    --line: #DDE5E0;
+    --soft: #F1F5F2;
+    --danger: #C93F3F;
+    --shadow: 0 14px 40px rgba(24,34,29,.10);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button { cursor: pointer; }
+
+button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+.container {
+    width: min(1296px, 90vw);
+    margin: auto;
+}
+
+/* =========================================
+   BARRA SUPERIOR
+========================================= */
+
+.topbar {
+    min-height: 72px;
+    background: white;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 5vw;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    gap: 15px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: var(--green);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.nav, .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-weight: 650;
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+
+.nav button:hover,
+.nav button.active {
+    background: var(--mint);
+    color: var(--green);
+}
+
+.primary {
+    border: 0;
+    background: var(--green);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 750;
+}
+
+.primary:hover { background: var(--green-dark); }
+
+.secondary {
+    border: 1px solid var(--line);
+    background: white;
+    color: var(--green);
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 750;
+}
+
+.secondary:hover { background: var(--mint); }
+
+.iconbtn {
+    border: 1px solid var(--line);
+    background: white;
+    padding: 10px 14px;
+    border-radius: 12px;
+}
+
+.footer {
+    border-top: 1px solid var(--line);
+    background: white;
+    color: var(--muted);
+    padding: 20px 5vw;
+    margin-top: 50px;
+    font-size: 13px;
+}
+
+/* =========================================
+   TARJETAS Y SECCIONES
+========================================= */
+
+.section { padding: 42px 0; }
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.section-head h1,
+.section-head h2 { margin: 0; }
+
+.section-head p {
+    margin: 7px 0 0;
+    color: var(--muted);
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: 0 8px 24px rgba(24,34,29,.05);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    gap: 28px;
+    padding: 36px 0;
+}
+
+.notice {
+    background: var(--mint);
+    color: var(--green);
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin: 16px 0;
+    font-size: 13px;
+}
+
+.error-message {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+/* =========================================
+   PÁGINA INICIAL
+========================================= */
+
+.hero {
+    display: grid;
+    grid-template-columns: 1.15fr .72fr;
+    gap: 34px;
+    padding: 48px 0 28px;
+}
+
+.hero-main {
+    min-height: 390px;
+    border-radius: 28px;
+    padding: 46px;
+    color: white;
+    background: linear-gradient(
+        135deg,
+        var(--green),
+        var(--green-dark)
+    );
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: var(--shadow);
+}
+
+.badge {
+    display: inline-flex;
+    background: rgba(255,255,255,.14);
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    width: max-content;
+}
+
+.hero h1 {
+    font-size: 52px;
+    line-height: 1.05;
+    margin: 18px 0 14px;
+}
+
+.hero p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #ECF7F0;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.hero-buttons .primary {
+    background: white;
+    color: var(--green);
+}
+
+.hero-buttons .secondary {
+    background: rgba(255,255,255,.08);
+    border-color: rgba(255,255,255,.25);
+    color: white;
+}
+
+.hero-side {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--line);
+    background: white;
+    border-radius: 14px;
+    padding: 13px 15px;
+}
+
+.search input {
+    border: 0;
+    outline: 0;
+    width: 100%;
+    background: transparent;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.quick-card {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px;
+    cursor: pointer;
+}
+
+.quick-card:hover {
+    background: var(--mint);
+}
+
+.quick-card .emoji { font-size: 26px; }
+.quick-card b { display: block; margin: 10px 0 3px; }
+.quick-card small { color: var(--muted); }
+
+.categories {
+    display: grid;
+    grid-template-columns: repeat(6,1fr);
+    gap: 14px;
+}
+
+.category {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.category .circle {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    background: var(--mint);
+    display: grid;
+    place-items: center;
+    margin: 0 auto 12px;
+    font-size: 28px;
+}
+
+.promo {
+    margin-top: 28px;
+    border: 1px solid #FFE1C1;
+    background: #FFF7EF;
+    border-radius: 22px;
+    padding: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* =========================================
+   PRODUCTOS
+========================================= */
+
+.products {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 18px;
+}
+
+.product {
+    position: relative;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 16px;
+    min-height: 295px;
+}
+
+.product-img {
+    height: 155px;
+    border-radius: 16px;
+    background: var(--mint);
+    display: grid;
+    place-items: center;
+    font-size: 48px;
+}
+
+.product .meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+}
+
+.product h3 {
+    font-size: 16px;
+    margin: 8px 0;
+}
+
+.price {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--green);
+}
+
+.add {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    border: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--green);
+    color: white;
+    font-size: 22px;
+}
+
+/* =========================================
+   CARRITO Y CHECKOUT
+========================================= */
+
+.list-item {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.thumb {
+    width: 90px;
+    height: 90px;
+    border-radius: 16px;
+    background: var(--mint);
+    display: grid;
+    place-items: center;
+    font-size: 38px;
+}
+
+.qty {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.qty button {
+    border: 0;
+    background: white;
+    width: 38px;
+    height: 38px;
+}
+
+.qty span {
+    width: 42px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 11px 0;
+    color: var(--muted);
+    gap: 15px;
+}
+
+.summary-row.total {
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+    padding-top: 17px;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.form-group { margin-bottom: 18px; }
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.radio {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.radio.selected {
+    background: var(--mint);
+    border-color: var(--green);
+}
+
+/* =========================================
+   CONFIRMACIÓN
+========================================= */
+
+.confirm {
+    min-height: 600px;
+    display: grid;
+    place-items: center;
+    padding: 50px 0;
+}
+
+.confirm-box {
+    text-align: center;
+    width: min(620px, 100%);
+}
+
+.check {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: var(--mint);
+    margin: 0 auto 24px;
+    display: grid;
+    place-items: center;
+    color: var(--green);
+    font-size: 44px;
+    font-weight: 900;
+}
+
+/* =========================================
+   PEDIDOS Y SEGUIMIENTO
+========================================= */
+
+.status {
+    display: inline-block;
+    background: var(--mint);
+    color: var(--green);
+    padding: 7px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status.cancel {
+    background: #FDECEC;
+    color: var(--danger);
+}
+
+.orders-table, .table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td,
+.table th,
+.table td {
+    padding: 15px 14px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+.orders-table th,
+.table th {
+    font-size: 12px;
+    color: var(--muted);
+    background: #FAFBFA;
+}
+
+.timeline {
+    max-width: 760px;
+    margin: 28px auto;
+}
+
+.step {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 18px;
+    position: relative;
+    padding-bottom: 30px;
+}
+
+.step::after {
+    content: "";
+    position: absolute;
+    left: 23px;
+    top: 45px;
+    width: 3px;
+    height: calc(100% - 20px);
+    background: var(--line);
+}
+
+.step:last-child::after { display: none; }
+
+.dot {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    display: grid;
+    place-items: center;
+    background: white;
+    color: var(--muted);
+    font-weight: 800;
+}
+
+.step.done .dot {
+    background: var(--green);
+    color: white;
+    border-color: var(--green);
+}
+
+.step.done::after { background: var(--green); }
+
+/* =========================================
+   LOGIN
+========================================= */
+
+.login-wrap {
+    min-height: 650px;
+    display: grid;
+    place-items: center;
+    padding: 40px;
+}
+
+.login-card {
+    width: min(440px,92vw);
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+}
+
+/* =========================================
+   ADMINISTRACIÓN
+========================================= */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: calc(100vh - 72px);
+}
+
+.sidebar {
+    background: white;
+    border-right: 1px solid var(--line);
+    padding: 26px 18px;
+}
+
+.sidebar h4 {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: .08em;
+    margin: 0 0 12px 10px;
+}
+
+.sidebar button {
+    width: 100%;
+    text-align: left;
+    border: 0;
+    background: transparent;
+    padding: 12px 14px;
+    border-radius: 10px;
+    color: var(--muted);
+    font-weight: 650;
+}
+
+.sidebar button.active,
+.sidebar button:hover {
+    background: var(--mint);
+    color: var(--green);
+}
+
+.admin-main { padding: 34px; min-width: 0; }
+
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 16px;
+}
+
+.metric {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.metric span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.metric b {
+    display: block;
+    margin-top: 10px;
+    color: var(--green);
+    font-size: 28px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    background: white;
+    border-radius: 18px;
+    margin-top: 24px;
+}
+
+.toast {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    background: #18221D;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: .2s;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:980px) {
+    .hero { grid-template-columns: 1fr; }
+    .categories { grid-template-columns: repeat(3,1fr); }
+    .products { grid-template-columns: repeat(2,1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .dashboard { grid-template-columns: 1fr; }
+    .sidebar { border-bottom: 1px solid var(--line); }
+    .metrics { grid-template-columns: repeat(2,1fr); }
+    .nav { display: none; }
+}
+
+@media(max-width:620px) {
+    .topbar { padding: 12px 16px; flex-wrap: wrap; }
+    .hero h1 { font-size: 38px; }
+    .hero-main { padding: 28px; }
+    .quick-grid { grid-template-columns: 1fr 1fr; }
+    .categories { grid-template-columns: repeat(2,1fr); }
+    .products { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr; }
+    .promo { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .section-head { align-items: flex-start; flex-direction: column; }
+    .list-item { grid-template-columns: 65px 1fr; }
+    .thumb { width: 65px; height: 65px; }
+    .qty { grid-column: 2; width: max-content; }
+    .admin-main { padding: 18px; }
+    .actions { flex-wrap: wrap; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================================
+     ENCABEZADO
+========================================= -->
+
+<header class="topbar">
+
+    <div class="brand" onclick="go('home')">
+        <div class="logo">MG</div>
+        MercaGo
+    </div>
+
+    <nav class="nav">
+        <button data-page="home" onclick="go('home')">Inicio</button>
+        <button data-page="catalog" onclick="go('catalog')">Productos</button>
+        <button data-page="orders" onclick="go('orders')">Mis pedidos</button>
+        <button data-page="tracking" onclick="go('tracking')">Seguimiento</button>
+    </nav>
+
+    <div class="actions">
+        <button class="iconbtn" onclick="go('cart')">
+            🛒 <span id="cartCount">0</span>
+        </button>
+
+        <button
+            class="secondary"
+            id="sessionButton"
+            onclick="sessionAction()"
+        >
+            Ingresar
+        </button>
+
+        <button
+            class="primary"
+            onclick="go('catalog')"
+        >
+            Comprar
+        </button>
+    </div>
+
+</header>
+
+<main>
+
+<!-- =========================================
+     INICIO
+========================================= -->
+
+<section id="home" class="page active">
+    <div class="container">
+
+        <div class="hero">
+            <div class="hero-main">
+
+                <div class="badge">
+                    📍 ENTREGAS EN MEDELLÍN
+                </div>
+
+                <h1>
+                    Tu supermercado,<br>
+                    estés donde estés.
+                </h1>
+
+                <p>
+                    Consulta productos, arma tu mercado
+                    y recibe tu pedido en casa.
+                    Todo desde una sola plataforma.
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="primary" onclick="go('catalog')">
+                        Explorar productos
+                    </button>
+
+                    <button class="secondary" onclick="go('tracking')">
+                        Seguir pedido
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="hero-side">
+
+                <div class="search">
+                    🔎
+                    <input
+                        id="busquedaInicio"
+                        placeholder="Buscar productos o categorías"
+                        oninput="buscarDesdeInicio(this.value)"
+                    >
+                </div>
+
+                <div class="quick-grid">
+
+                    <div class="quick-card" onclick="filtrarCategoria('Frutas')">
+                        <div class="emoji">🍎</div>
+                        <b>Frutas y verduras</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                    <div class="quick-card" onclick="filtrarCategoria('Lácteos')">
+                        <div class="emoji">🥛</div>
+                        <b>Lácteos y huevos</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                    <div class="quick-card" onclick="filtrarCategoria('Bebidas')">
+                        <div class="emoji">🥤</div>
+                        <b>Bebidas</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                    <div class="quick-card" onclick="filtrarCategoria('Aseo')">
+                        <div class="emoji">🧼</div>
+                        <b>Aseo del hogar</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+
+            <div class="section-head">
+                <div>
+                    <h2>Categorías</h2>
+                    <p>Encuentra lo que necesitas más rápido.</p>
+                </div>
+
+                <button class="secondary" onclick="go('catalog')">
+                    Ver todas
+                </button>
+            </div>
+
+            <div class="categories">
+
+                <div class="category" onclick="filtrarCategoria('Frutas')">
+                    <div class="circle">🍎</div>
+                    <b>Frutas</b>
+                </div>
+
+                <div class="category" onclick="filtrarCategoria('Carnes')">
+                    <div class="circle">🥩</div>
+                    <b>Carnes</b>
+                </div>
+
+                <div class="category" onclick="filtrarCategoria('Lácteos')">
+                    <div class="circle">🥛</div>
+                    <b>Lácteos</b>
+                </div>
+
+                <div class="category" onclick="filtrarCategoria('Despensa')">
+                    <div class="circle">🍚</div>
+                    <b>Despensa</b>
+                </div>
+
+                <div class="category" onclick="filtrarCategoria('Bebidas')">
+                    <div class="circle">🥤</div>
+                    <b>Bebidas</b>
+                </div>
+
+                <div class="category" onclick="filtrarCategoria('Aseo')">
+                    <div class="circle">🧼</div>
+                    <b>Aseo</b>
+                </div>
+
+            </div>
+
+            <div class="promo">
+                <div>
+                    <h3 style="margin:0 0 6px">
+                        Tu mercado sin salir de casa
+                    </h3>
+                    <span style="color:var(--muted)">
+                        Compra en línea y paga en efectivo
+                        cuando recibas tu pedido.
+                    </span>
+                </div>
+
+                <button class="primary" onclick="go('catalog')">
+                    Comprar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- =========================================
+     CATÁLOGO
+========================================= -->
+
+<section id="catalog" class="page">
+
+    <div class="container section">
+
+        <div class="section-head">
+            <div>
+                <h1>Catálogo de productos</h1>
+                <p>Productos disponibles para domicilio.</p>
+            </div>
+
+            <div class="search">
+                🔎
+                <input
+                    id="buscarProducto"
+                    placeholder="Buscar productos"
+                    oninput="renderProducts()"
+                >
+            </div>
+        </div>
+
+        <div style="margin-bottom:20px">
+            <button class="secondary" onclick="limpiarFiltros()">
+                Todas las categorías
+            </button>
+            <span id="categoriaActual" style="color:var(--muted);margin-left:12px"></span>
+        </div>
+
+        <div id="productGrid" class="products"></div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     CARRITO
+========================================= -->
+
+<section id="cart" class="page">
+
+    <div class="container grid-2">
+
+        <div class="card">
+
+            <h2 style="margin-top:0">Tu carrito</h2>
+
+            <p
+                id="cartSubtitle"
+                style="color:var(--muted)"
+            >
+                0 productos agregados
+            </p>
+
+            <div id="cartItems"></div>
+
+        </div>
+
+        <div class="card">
+
+            <h3 style="margin-top:0">Resumen</h3>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <b id="subtotal">$0</b>
+            </div>
+
+            <div class="summary-row">
+                <span>Domicilio</span>
+                <b id="cartDomicilio">$0</b>
+            </div>
+
+            <div class="summary-row total">
+                <span>Total</span>
+                <b id="total">$0</b>
+            </div>
+
+            <p style="color:var(--muted);font-size:12px">
+                El valor definitivo se calcula con los precios
+                y existencias registrados en SQL Server.
+            </p>
+
+            <button
+                class="primary"
+                style="width:100%;margin-top:18px"
+                onclick="go('checkout')"
+            >
+                Continuar con el pedido
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     FINALIZAR COMPRA
+========================================= -->
+
+<section id="checkout" class="page">
+
+    <div class="container grid-2">
+
+        <div class="card">
+
+            <h2 style="margin-top:0">
+                Finalizar compra
+            </h2>
+
+            <p style="color:var(--muted)">
+                Completa tus datos de entrega.
+            </p>
+
+            <div class="form-group">
+                <label for="checkoutNombre">Nombre completo</label>
+                <input
+                    id="checkoutNombre"
+                    type="text"
+                    readonly
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="checkoutDireccion">Dirección de entrega</label>
+                <input
+                    id="checkoutDireccion"
+                    type="text"
+                    placeholder="Ejemplo: Calle 45 # 32-18, Medellín"
+                    maxlength="300"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="checkoutTelefono">Teléfono</label>
+                <input
+                    id="checkoutTelefono"
+                    type="tel"
+                    placeholder="Ejemplo: 3001234567"
+                    maxlength="40"
+                    required
+                >
+            </div>
+
+            <h3>Forma de pago</h3>
+
+            <div class="radio selected">
+                ◉ Pago contra entrega en efectivo
+            </div>
+
+            <div class="notice">
+                El pago se realiza cuando recibas tu pedido.
+                No se aceptan pagos electrónicos en esta versión.
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3 style="margin-top:0">
+                Resumen del pedido
+            </h3>
+
+            <div class="summary-row">
+                <span>Productos</span>
+                <b id="checkoutSubtotal">$0</b>
+            </div>
+
+            <div class="summary-row">
+                <span>Domicilio</span>
+                <b id="checkoutDomicilio">$4.000</b>
+            </div>
+
+            <div class="summary-row total">
+                <span>Total</span>
+                <b id="checkoutTotal">$0</b>
+            </div>
+
+            <button
+                id="btnConfirmarPedido"
+                class="primary"
+                style="width:100%;margin-top:18px"
+                onclick="confirmOrder()"
+            >
+                Confirmar pedido
+            </button>
+
+            <p
+                id="checkoutMensaje"
+                class="error-message"
+                role="alert"
+            ></p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     PEDIDO CONFIRMADO
+========================================= -->
+
+<section id="confirmed" class="page">
+
+    <div class="container confirm">
+
+        <div class="confirm-box">
+
+            <div class="check">✓</div>
+
+            <h1>¡Pedido confirmado!</h1>
+
+            <p style="color:var(--muted)">
+                Tu pedido
+                <b id="numeroPedidoConfirmado">-</b>
+                fue registrado correctamente.
+            </p>
+
+            <div
+                class="card"
+                style="text-align:left;margin:28px 0"
+            >
+
+                <div class="summary-row">
+                    <span>Número de pedido</span>
+                    <b id="confirmNumero">-</b>
+                </div>
+
+                <div class="summary-row">
+                    <span>Estado</span>
+                    <span class="status" id="confirmEstado">
+                        Pendiente
+                    </span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <b id="confirmSubtotal">$0</b>
+                </div>
+
+                <div class="summary-row">
+                    <span>Domicilio</span>
+                    <b id="confirmDomicilio">$0</b>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <b id="confirmTotal">$0</b>
+                </div>
+
+                <div class="summary-row">
+                    <span>Forma de pago</span>
+                    <b>Efectivo contra entrega</b>
+                </div>
+
+            </div>
+
+            <button class="primary" onclick="go('orders')">
+                Ver mis pedidos
+            </button>
+
+            <button class="secondary" onclick="go('catalog')">
+                Seguir comprando
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     HISTORIAL DE PEDIDOS
+========================================= -->
+
+<section id="orders" class="page">
+
+    <div class="container section">
+
+        <div class="section-head">
+            <div>
+                <h1>Mis pedidos</h1>
+                <p>
+                    Historial de compras y estado actual.
+                </p>
+            </div>
+
+            <button
+                class="secondary"
+                onclick="cargarPedidos()"
+            >
+                Actualizar
+            </button>
+        </div>
+
+        <div class="card" style="overflow-x:auto">
+
+            <table class="orders-table">
+
+                <thead>
+                    <tr>
+                        <th>PEDIDO</th>
+                        <th>FECHA</th>
+                        <th>ESTADO</th>
+                        <th>TOTAL</th>
+                        <th>ACCIÓN</th>
+                    </tr>
+                </thead>
+
+                <tbody id="ordersBody">
+                    <tr>
+                        <td colspan="5">
+                            Cargando pedidos...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     SEGUIMIENTO
+========================================= -->
+
+<section id="tracking" class="page">
+
+    <div class="container section">
+
+        <div class="section-head">
+
+            <div>
+                <h1>Seguimiento del pedido</h1>
+                <p id="trackingNumero">
+                    Selecciona un pedido para consultar su estado.
+                </p>
+            </div>
+
+            <span
+                class="status"
+                id="trackingEstado"
+            >
+                Sin pedido
+            </span>
+
+        </div>
+
+        <div
+            class="card"
+            style="max-width:900px;margin:auto"
+        >
+
+            <h2 id="trackingTitulo">
+                Estado de tu domicilio
+            </h2>
+
+            <p id="trackingDireccion" style="color:var(--muted)"></p>
+
+            <div class="timeline" id="trackingTimeline">
+                <p>
+                    Abre la sección Mis pedidos y selecciona
+                    uno para consultar su seguimiento.
+                </p>
+            </div>
+
+            <div class="notice">
+                El estado se actualiza cuando el supermercado
+                registra los cambios del pedido.
+            </div>
+
+            <button
+                class="secondary"
+                onclick="actualizarSeguimiento()"
+            >
+                Actualizar seguimiento
+            </button>
+
+            <button
+                class="primary"
+                onclick="go('orders')"
+            >
+                Mis pedidos
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     INICIO DE SESIÓN
+========================================= -->
+
+<section id="login" class="page">
+
+    <div class="login-wrap">
+
+        <div class="login-card">
+
+            <div class="logo" style="margin-bottom:18px">
+                MG
+            </div>
+
+            <h2 style="margin:0">Iniciar sesión</h2>
+
+            <p style="color:var(--muted)">
+                Accede a tu cuenta MercaGo.
+            </p>
+
+            <div class="notice">
+                Tus credenciales se validan en SQL Server.
+                El acceso administrativo requiere permisos.
+            </div>
+
+            <form id="loginForm" onsubmit="login(event)">
+
+                <div class="form-group">
+                    <label for="loginCorreo">Correo electrónico</label>
+                    <input
+                        id="loginCorreo"
+                        type="email"
+                        placeholder="correo@ejemplo.com"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginContrasena">Contraseña</label>
+                    <input
+                        id="loginContrasena"
+                        type="password"
+                        placeholder="Tu contraseña"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <p
+                    id="loginError"
+                    class="error-message"
+                    role="alert"
+                ></p>
+
+                <button
+                    id="loginSubmit"
+                    type="submit"
+                    class="primary"
+                    style="width:100%"
+                >
+                    Ingresar
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================
+     PANEL ADMINISTRATIVO
+========================================= -->
+
+<section id="admin" class="page">
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+
+            <div class="brand" style="margin-bottom:22px">
+                <div class="logo">MG</div>
+                Admin
+            </div>
+
+            <h4>GESTIÓN</h4>
+
+            <button class="active" onclick="cargarPanelAdmin()">
+                Resumen
+            </button>
+
+            <button onclick="cargarPanelAdmin()">
+                Pedidos
+            </button>
+
+            <button onclick="go('catalog')">
+                Productos
+            </button>
+
+            <button onclick="toast('Inventario: consulta el stock en el catálogo')">
+                Inventario
+            </button>
+
+            <button onclick="go('home')">
+                ← Volver a tienda
+            </button>
+
+        </aside>
+
+        <div class="admin-main">
+
+            <div class="section-head">
+
+                <div>
+                    <h1>Panel del supermercado</h1>
+                    <p>
+                        Gestión operativa de pedidos de MercaGo.
+                    </p>
+                </div>
+
+                <button
+                    class="primary"
+                    onclick="cargarPanelAdmin()"
+                >
+                    Actualizar
+                </button>
+
+            </div>
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <span>Pedidos hoy</span>
+                    <b id="metricPedidos">0</b>
+                </div>
+
+                <div class="metric">
+                    <span>Pendientes</span>
+                    <b id="metricPendientes">0</b>
+                </div>
+
+                <div class="metric">
+                    <span>En camino</span>
+                    <b id="metricCamino">0</b>
+                </div>
+
+                <div class="metric">
+                    <span>Ventas entregadas hoy</span>
+                    <b id="metricVentas">$0</b>
+                </div>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Cliente</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="adminOrdersBody">
+                        <tr>
+                            <td colspan="5">
+                                Cargando pedidos...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+<footer class="footer">
+    MercaGo · Medellín · Proyecto académico ITM
+</footer>
+
+<div id="toast" class="toast" role="status"></div>
+
+<!-- =========================================
+     JAVASCRIPT PRINCIPAL
+========================================= -->
+
+<script>
+
+// ============================================
+// CONFIGURACIÓN GLOBAL
+// ============================================
+
+const API_BASE = "http://localhost:3000/api";
+const COSTO_DOMICILIO = 4000;
+
+let products = [];
+let cart = [];
+let pedidos = [];
+let categoriaFiltro = "";
+
+let authToken = sessionStorage.getItem("mercago_token");
+let currentUser = null;
+let pedidoSeleccionado = null;
+let ultimoPedido = null;
+let procesandoPedido = false;
+
+let toastTimeout;
+
+// ============================================
+// UTILIDADES
+// ============================================
+
+function money(valor) {
+    return "$" + Number(valor || 0).toLocaleString("es-CO", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+    });
+}
+
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[c]);
+}
+
+function fechaColombia(fecha) {
+    if (!fecha) return "-";
+
+    return new Date(fecha).toLocaleString("es-CO", {
+        timeZone: "America/Bogota",
+        dateStyle: "medium",
+        timeStyle: "short"
+    });
+}
+
+function fechaEsHoy(fecha) {
+    if (!fecha) return false;
+
+    const formato = d => new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Bogota",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(new Date(d));
+
+    return formato(fecha) === formato(new Date());
+}
+
+function toast(mensaje) {
+    const t = document.getElementById("toast");
+
+    clearTimeout(toastTimeout);
+    t.textContent = mensaje;
+    t.classList.add("show");
+
+    toastTimeout = setTimeout(() => {
+        t.classList.remove("show");
+    }, 3000);
+}
+
+function estadoHtml(estado) {
+    const cancelado = estado === "Cancelado";
+
+    return `
+        <span class="status ${cancelado ? "cancel" : ""}">
+            ${escapeHtml(estado)}
+        </span>
+    `;
+}
+
+// ============================================
+// PETICIONES A LA API
+// ============================================
+
+async function apiRequest(ruta, opciones = {}) {
+
+    const headers = {
+        ...opciones.headers
+    };
+
+    if (authToken) {
+        headers.Authorization = "Bearer " + authToken;
+    }
+
+    if (opciones.body) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    let respuesta;
+
+    try {
+        respuesta = await fetch(API_BASE + ruta, {
+            ...opciones,
+            headers
+        });
+    } catch (error) {
+        throw new Error(
+            "No fue posible conectar con el servidor MercaGo."
+        );
+    }
+
+    const datos = await respuesta.json().catch(() => ({}));
+
+    if (!respuesta.ok) {
+        if (respuesta.status === 401) {
+            throw new Error(
+                "Sesión vencida o no autorizada. Inicia sesión nuevamente."
+            );
+        }
+
+        throw new Error(
+            datos.mensaje || `Error HTTP ${respuesta.status}`
+        );
+    }
+
+    return datos;
+}
+
+// ============================================
+// AUTENTICACIÓN
+// ============================================
+
+function updateSessionUI() {
+
+    const boton = document.getElementById("sessionButton");
+
+    boton.textContent = currentUser
+        ? `Salir (${currentUser.nombre})`
+        : "Ingresar";
+}
+
+function sessionAction() {
+
+    if (currentUser) {
+        logout();
+    } else {
+        go("login");
+    }
+}
+
+function logout() {
+
+    sessionStorage.removeItem("mercago_token");
+
+    authToken = null;
+    currentUser = null;
+    cart = [];
+    pedidos = [];
+    pedidoSeleccionado = null;
+
+    updateCartCount();
+    updateSessionUI();
+
+    go("home");
+    toast("Sesión cerrada correctamente");
+}
+
+async function restoreSession() {
+
+    if (!authToken) {
+        updateSessionUI();
+        return;
+    }
+
+    try {
+        const respuesta = await apiRequest("/auth/perfil");
+        currentUser = respuesta.usuario;
+
+    } catch (error) {
+        authToken = null;
+        currentUser = null;
+        sessionStorage.removeItem("mercago_token");
+    }
+
+    updateSessionUI();
+}
+
+async function login(event) {
+
+    if (event) event.preventDefault();
+
+    const correo = document.getElementById(
+        "loginCorreo"
+    ).value.trim();
+
+    const contrasena = document.getElementById(
+        "loginContrasena"
+    ).value;
+
+    const errorElement = document.getElementById(
+        "loginError"
+    );
+
+    const boton = document.getElementById(
+        "loginSubmit"
+    );
+
+    errorElement.textContent = "";
+    boton.disabled = true;
+    boton.textContent = "Validando...";
+
+    try {
+
+        const datos = await apiRequest("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({
+                correo,
+                contrasena
+            })
+        });
+
+        if (!datos.token || !datos.usuario) {
+            throw new Error("Respuesta inválida del servidor");
+        }
+
+        // Verificar la sesión en el backend
+        const tokenAnterior = authToken;
+        authToken = datos.token;
+
+        let perfil;
+
+        try {
+            perfil = await apiRequest("/auth/perfil");
+        } catch (error) {
+            authToken = tokenAnterior;
+            throw error;
+        }
+
+        currentUser = perfil.usuario;
+
+        sessionStorage.setItem(
+            "mercago_token",
+            authToken
+        );
+
+        document.getElementById(
+            "loginContrasena"
+        ).value = "";
+
+        updateSessionUI();
+
+        toast("Bienvenido a MercaGo");
+
+        if (currentUser.rol === "ADMINISTRADOR") {
+            await go("admin");
+        } else {
+            await go("home");
+        }
+
+    } catch (error) {
+
+        errorElement.textContent = error.message;
+
+    } finally {
+
+        boton.disabled = false;
+        boton.textContent = "Ingresar";
+    }
+}
+
+// ============================================
+// NAVEGACIÓN
+// ============================================
+
+async function go(id) {
+
+    if (id === "checkout") {
+
+        if (!currentUser) {
+            toast("Inicia sesión antes de comprar");
+            id = "login";
+
+        } else if (currentUser.rol !== "CLIENTE") {
+            toast("Ingresa con una cuenta de cliente");
+            return;
+
+        } else if (cart.length === 0) {
+            toast("Tu carrito está vacío");
+            id = "cart";
+
+        } else {
+            document.getElementById(
+                "checkoutNombre"
+            ).value = currentUser.nombre || "";
+        }
+    }
+
+    if (["orders", "tracking"].includes(id)) {
+        if (!currentUser) {
+            toast("Inicia sesión para consultar tus pedidos");
+            id = "login";
+        } else if (currentUser.rol !== "CLIENTE") {
+            toast("Esta sección es para clientes");
+            return;
+        }
+    }
+
+    if (id === "admin") {
+
+        if (!authToken || currentUser?.rol !== "ADMINISTRADOR") {
+            toast("Acceso exclusivo para administradores");
+            id = "login";
+        } else {
+            try {
+                await apiRequest("/auth/admin/verificar");
+            } catch (error) {
+                toast("No fue posible validar los permisos");
+                return;
+            }
+        }
+    }
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    const pantalla = document.getElementById(id);
+
+    if (pantalla) {
+        pantalla.classList.add("active");
+    }
+
+    document.querySelectorAll(".nav button").forEach(btn => {
+        btn.classList.toggle(
+            "active",
+            btn.dataset.page === id
+        );
+    });
+
+    if (id === "cart") renderCart();
+    if (id === "checkout") updateCheckout();
+    if (id === "orders") await cargarPedidos();
+    if (id === "tracking") await actualizarSeguimiento();
+    if (id === "admin") await cargarPanelAdmin();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+// ============================================
+// PRODUCTOS DESDE SQL SERVER
+// ============================================
+
+async function cargarProductos() {
+
+    const grid = document.getElementById("productGrid");
+
+    grid.innerHTML = "<p>Cargando productos...</p>";
+
+    try {
+
+        const datos = await apiRequest("/productos");
+
+        if (!Array.isArray(datos)) {
+            throw new Error(
+                "La API no devolvió una lista de productos"
+            );
+        }
+
+        products = datos.map(p => ({
+            id: Number(p.id),
+            name: String(p.name ?? ""),
+            cat: String(p.cat ?? ""),
+            price: Number(p.price),
+            emoji: String(p.emoji ?? "🛒"),
+            stock: Number(p.stock ?? 0)
+        }));
+
+        renderProducts();
+
+    } catch (error) {
+
+        console.error(error);
+
+        grid.innerHTML = `
+            <p style="color:var(--danger)">
+                ${escapeHtml(error.message)}
+            </p>
+        `;
+    }
+}
+
+function renderProducts() {
+
+    const grid = document.getElementById("productGrid");
+
+    const busqueda = document.getElementById(
+        "buscarProducto"
+    ).value.toLowerCase().trim();
+
+    const filtrados = products.filter(p => {
+
+        const coincideTexto =
+            p.name.toLowerCase().includes(busqueda) ||
+            p.cat.toLowerCase().includes(busqueda);
+
+        const coincideCategoria =
+            !categoriaFiltro ||
+            p.cat.toLowerCase().includes(
+                categoriaFiltro.toLowerCase()
+            );
+
+        return coincideTexto && coincideCategoria;
+    });
+
+    if (filtrados.length === 0) {
+        grid.innerHTML = `
+            <div class="card">
+                No se encontraron productos.
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = filtrados.map(p => `
+
+        <article class="product">
+
+            <div class="product-img">
+                ${escapeHtml(p.emoji)}
+            </div>
+
+            <div class="meta">
+                ${escapeHtml(p.cat)}
+            </div>
+
+            <h3>${escapeHtml(p.name)}</h3>
+
+            <div class="price">
+                ${money(p.price)}
+            </div>
+
+            <small style="color:var(--muted)">
+                Disponibles: ${p.stock}
+            </small>
+
+            <button
+                class="add"
+                onclick="addToCart(${p.id})"
+                ${p.stock <= 0 ? "disabled" : ""}
+                title="Agregar al carrito"
+            >
+                +
+            </button>
+
+        </article>
+
+    `).join("");
+}
+
+function filtrarCategoria(categoria) {
+
+    categoriaFiltro = categoria;
+
+    document.getElementById(
+        "categoriaActual"
+    ).textContent = categoria;
+
+    go("catalog");
+    renderProducts();
+}
+
+function limpiarFiltros() {
+
+    categoriaFiltro = "";
+
+    document.getElementById(
+        "buscarProducto"
+    ).value = "";
+
+    document.getElementById(
+        "categoriaActual"
+    ).textContent = "";
+
+    renderProducts();
+}
+
+function buscarDesdeInicio(texto) {
+
+    categoriaFiltro = "";
+
+    document.getElementById(
+        "categoriaActual"
+    ).textContent = "";
+
+    document.getElementById(
+        "buscarProducto"
+    ).value = texto;
+
+    go("catalog");
+    renderProducts();
+}
+
+// ============================================
+// CARRITO
+// ============================================
+
+function addToCart(id) {
+
+    const producto = products.find(p => p.id === id);
+
+    if (!producto) {
+        toast("Producto no encontrado");
+        return;
+    }
+
+    const existente = cart.find(p => p.id === id);
+
+    const cantidadActual = existente?.qty || 0;
+
+    if (cantidadActual >= producto.stock) {
+        toast("No hay suficientes existencias");
+        return;
+    }
+
+    if (existente) {
+        existente.qty++;
+    } else {
+        cart.push({
+            ...producto,
+            qty: 1
+        });
+    }
+
+    updateCartCount();
+
+    toast(producto.name + " agregado al carrito");
+}
+
+function changeQty(id, delta) {
+
+    const item = cart.find(p => p.id === id);
+
+    if (!item) return;
+
+    const nuevaCantidad = item.qty + delta;
+
+    const producto = products.find(p => p.id === id);
+
+    if (
+        delta > 0 &&
+        producto &&
+        nuevaCantidad > producto.stock
+    ) {
+        toast("No hay suficientes existencias");
+        return;
+    }
+
+    if (nuevaCantidad <= 0) {
+        cart = cart.filter(p => p.id !== id);
+    } else {
+        item.qty = nuevaCantidad;
+    }
+
+    updateCartCount();
+    renderCart();
+}
+
+function updateCartCount() {
+
+    const cantidad = cart.reduce(
+        (suma, item) => suma + item.qty,
+        0
+    );
+
+    document.getElementById(
+        "cartCount"
+    ).textContent = cantidad;
+}
+
+function calcularSubtotal() {
+    return cart.reduce(
+        (suma, item) => suma + item.price * item.qty,
+        0
+    );
+}
+
+function renderCart() {
+
+    const box = document.getElementById("cartItems");
+
+    const cantidad = cart.reduce(
+        (suma, item) => suma + item.qty,
+        0
+    );
+
+    document.getElementById(
+        "cartSubtitle"
+    ).textContent = cantidad + " productos agregados";
+
+    if (cart.length === 0) {
+
+        box.innerHTML = `
+            <div style="text-align:center;padding:55px 0;color:var(--muted)">
+                Tu carrito está vacío.
+
+                <div style="margin-top:20px">
+                    <button
+                        class="primary"
+                        onclick="go('catalog')"
+                    >
+                        Ir al catálogo
+                    </button>
+                </div>
+            </div>
+        `;
+
+    } else {
+
+        box.innerHTML = cart.map(item => `
+
+            <div class="list-item">
+
+                <div class="thumb">
+                    ${escapeHtml(item.emoji)}
+                </div>
+
+                <div>
+                    <b>${escapeHtml(item.name)}</b>
+
+                    <p style="color:var(--muted)">
+                        ${money(item.price)}
+                    </p>
+
+                    <strong>
+                        ${money(item.price * item.qty)}
+                    </strong>
+                </div>
+
+                <div class="qty">
+
+                    <button onclick="changeQty(${item.id},-1)">
+                        −
+                    </button>
+
+                    <span>${item.qty}</span>
+
+                    <button onclick="changeQty(${item.id},1)">
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+        `).join("");
+    }
+
+    const subtotal = calcularSubtotal();
+    const domicilio = cart.length ? COSTO_DOMICILIO : 0;
+
+    document.getElementById("subtotal").textContent =
+        money(subtotal);
+
+    document.getElementById("cartDomicilio").textContent =
+        money(domicilio);
+
+    document.getElementById("total").textContent =
+        money(subtotal + domicilio);
+}
+
+// ============================================
+// CHECKOUT
+// ============================================
+
+function updateCheckout() {
+
+    const subtotal = calcularSubtotal();
+
+    document.getElementById(
+        "checkoutSubtotal"
+    ).textContent = money(subtotal);
+
+    document.getElementById(
+        "checkoutDomicilio"
+    ).textContent = money(COSTO_DOMICILIO);
+
+    document.getElementById(
+        "checkoutTotal"
+    ).textContent = money(subtotal + COSTO_DOMICILIO);
+}
+
+// ============================================
+// CONFIRMAR PEDIDO REAL
+// ============================================
+
+async function confirmOrder() {
+
+    if (procesandoPedido) return;
+
+    const boton = document.getElementById(
+        "btnConfirmarPedido"
+    );
+
+    const mensaje = document.getElementById(
+        "checkoutMensaje"
+    );
+
+    const direccion = document.getElementById(
+        "checkoutDireccion"
+    ).value.trim();
+
+    const telefono = document.getElementById(
+        "checkoutTelefono"
+    ).value.trim();
+
+    mensaje.textContent = "";
+
+    if (!authToken || !currentUser) {
+        toast("Debes iniciar sesión");
+        await go("login");
+        return;
+    }
+
+    if (currentUser.rol !== "CLIENTE") {
+        mensaje.textContent =
+            "Debes ingresar con una cuenta de cliente.";
+        return;
+    }
+
+    if (cart.length === 0) {
+        mensaje.textContent = "Tu carrito está vacío.";
+        return;
+    }
+
+    if (!direccion) {
+        mensaje.textContent =
+            "Debes ingresar la dirección de entrega.";
+        return;
+    }
+
+    if (!telefono) {
+        mensaje.textContent =
+            "Debes ingresar un número de teléfono.";
+        return;
+    }
+
+    const datosPedido = {
+
+        direccion,
+        telefono,
+
+        items: cart.map(item => ({
+            id: item.id,
+            qty: item.qty
+        }))
+    };
+
+    procesandoPedido = true;
+
+    boton.disabled = true;
+    boton.textContent = "Procesando pedido...";
+
+    try {
+
+        const resultado = await apiRequest("/pedidos", {
+            method: "POST",
+            body: JSON.stringify(datosPedido)
+        });
+
+        const pedido = resultado.pedido;
+
+        if (!pedido || !pedido.id) {
+            throw new Error(
+                "El servidor no devolvió el número del pedido."
+            );
+        }
+
+        ultimoPedido = pedido;
+        pedidoSeleccionado = pedido.id;
+
+        sessionStorage.setItem(
+            "mercago_ultimo_pedido",
+            String(pedido.id)
+        );
+
+        // El pedido fue confirmado por el backend.
+        cart = [];
+        updateCartCount();
+
+        mostrarPedidoConfirmado(pedido);
+
+        // La compra ya se registró. Si falla la
+        // actualización del catálogo, no se vuelve
+        // a enviar la compra.
+        await cargarProductos();
+
+        await go("confirmed");
+
+        toast("¡Pedido registrado correctamente!");
+
+    } catch (error) {
+
+        console.error("Error de compra:", error);
+
+        mensaje.textContent = error.message;
+
+        toast("No se pudo confirmar el pedido");
+
+        // Si el navegador perdió la respuesta,
+        // comprobar el historial antes de reintentar
+        // para evitar registrar compras duplicadas.
+
+    } finally {
+
+        procesandoPedido = false;
+        boton.disabled = false;
+        boton.textContent = "Confirmar pedido";
+    }
+}
+
+function mostrarPedidoConfirmado(pedido) {
+
+    const numero = "#MG-" + pedido.id;
+
+    document.getElementById(
+        "numeroPedidoConfirmado"
+    ).textContent = numero;
+
+    document.getElementById(
+        "confirmNumero"
+    ).textContent = numero;
+
+    document.getElementById(
+        "confirmEstado"
+    ).textContent = pedido.estado;
+
+    document.getElementById(
+        "confirmSubtotal"
+    ).textContent = money(pedido.subtotal);
+
+    document.getElementById(
+        "confirmDomicilio"
+    ).textContent = money(pedido.costoDomicilio);
+
+    document.getElementById(
+        "confirmTotal"
+    ).textContent = money(pedido.total);
+}
+
+// ============================================
+// HISTORIAL DE PEDIDOS
+// ============================================
+
+async function cargarPedidos() {
+
+    const tbody = document.getElementById(
+        "ordersBody"
+    );
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="5">Cargando pedidos...</td>
+        </tr>
+    `;
+
+    try {
+
+        pedidos = await apiRequest("/pedidos");
+
+        if (!Array.isArray(pedidos)) {
+            throw new Error("Respuesta de pedidos inválida");
+        }
+
+        if (pedidos.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        Todavía no has realizado compras.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        tbody.innerHTML = pedidos.map(pedido => `
+
+            <tr>
+
+                <td>
+                    <b>#MG-${pedido.id}</b>
+                </td>
+
+                <td>
+                    ${fechaColombia(pedido.fecha)}
+                </td>
+
+                <td>
+                    ${estadoHtml(pedido.estado)}
+                </td>
+
+                <td>
+                    <b>${money(pedido.total)}</b>
+                </td>
+
+                <td>
+                    <button
+                        class="secondary"
+                        onclick="verPedido(${pedido.id})"
+                    >
+                        Ver detalle
+                    </button>
+
+                    ${pedido.estado === "Pendiente" ? `
+                        <button
+                            class="secondary"
+                            onclick="cancelarPedido(${pedido.id})"
+                        >
+                            Cancelar
+                        </button>
+                    ` : ""}
+
+                </td>
+
+            </tr>
+
+        `).join("");
+
+    } catch (error) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="color:var(--danger)">
+                    ${escapeHtml(error.message)}
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// ============================================
+// DETALLE Y SEGUIMIENTO
+// ============================================
+
+async function verPedido(id) {
+
+    pedidoSeleccionado = id;
+
+    sessionStorage.setItem(
+        "mercago_ultimo_pedido",
+        String(id)
+    );
+
+    await go("tracking");
+}
+
+async function actualizarSeguimiento() {
+
+    if (!pedidoSeleccionado) {
+
+        const guardado = Number(
+            sessionStorage.getItem("mercago_ultimo_pedido")
+        );
+
+        if (Number.isSafeInteger(guardado) && guardado > 0) {
+            pedidoSeleccionado = guardado;
+        }
+    }
+
+    if (!pedidoSeleccionado) {
+
+        document.getElementById(
+            "trackingTimeline"
+        ).textContent =
+            "Selecciona un pedido desde Mis pedidos.";
+
+        return;
+    }
+
+    try {
+
+        const resultado = await apiRequest(
+            `/pedidos/${pedidoSeleccionado}`
+        );
+
+        const pedido = resultado.pedido;
+        const estado = pedido.estado;
+
+        document.getElementById(
+            "trackingNumero"
+        ).textContent = "#MG-" + pedido.id;
+
+        document.getElementById(
+            "trackingEstado"
+        ).textContent = estado;
+
+        document.getElementById(
+            "trackingTitulo"
+        ).textContent =
+            "Estado actual: " + estado;
+
+        document.getElementById(
+            "trackingDireccion"
+        ).textContent =
+            "Dirección: " + (pedido.direccion || "");
+
+        const pasos = [
+            "Pendiente",
+            "En camino",
+            "Entregado"
+        ];
+
+        const indice = pasos.indexOf(estado);
+
+        if (estado === "Cancelado") {
+
+            document.getElementById(
+                "trackingTimeline"
+            ).innerHTML = `
+                <div class="notice">
+                    Este pedido fue cancelado.
+                </div>
+            `;
+
+            return;
+        }
+
+        document.getElementById(
+            "trackingTimeline"
+        ).innerHTML = pasos.map((paso, i) => `
+
+            <div class="step ${i <= indice ? "done" : ""}">
+
+                <div class="dot">
+                    ${i <= indice ? "✓" : i + 1}
+                </div>
+
+                <div>
+                    <b>${paso}</b>
+
+                    <p style="color:var(--muted)">
+                        ${i <= indice
+                            ? "Etapa alcanzada"
+                            : "Pendiente"}
+                    </p>
+                </div>
+
+            </div>
+
+        `).join("");
+
+    } catch (error) {
+
+        document.getElementById(
+            "trackingTimeline"
+        ).textContent = error.message;
+    }
+}
+
+// ============================================
+// CANCELACIÓN DE PEDIDOS
+// ============================================
+
+async function cancelarPedido(id) {
+
+    const confirmar = window.confirm(
+        `¿Deseas cancelar el pedido #MG-${id}?`
+    );
+
+    if (!confirmar) return;
+
+    try {
+
+        await apiRequest(`/pedidos/${id}/cancelar`, {
+            method: "PATCH"
+        });
+
+        toast("Pedido cancelado correctamente");
+
+        await cargarProductos();
+        await cargarPedidos();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+// ============================================
+// PANEL ADMINISTRATIVO
+// ============================================
+
+async function cargarPanelAdmin() {
+
+    if (currentUser?.rol !== "ADMINISTRADOR") {
+        toast("No autorizado");
+        return;
+    }
+
+    const tbody = document.getElementById(
+        "adminOrdersBody"
+    );
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="5">Cargando pedidos...</td>
+        </tr>
+    `;
+
+    try {
+
+        const lista = await apiRequest("/pedidos");
+
+        if (!Array.isArray(lista)) {
+            throw new Error("Respuesta inválida del servidor");
+        }
+
+        const hoy = lista.filter(p => fechaEsHoy(p.fecha));
+
+        const pendientes = lista.filter(
+            p => p.estado === "Pendiente"
+        );
+
+        const camino = lista.filter(
+            p => p.estado === "En camino"
+        );
+
+        const entregadosHoy = hoy.filter(
+            p => p.estado === "Entregado"
+        );
+
+        const ventas = entregadosHoy.reduce(
+            (suma, p) => suma + Number(p.total),
+            0
+        );
+
+        document.getElementById(
+            "metricPedidos"
+        ).textContent = hoy.length;
+
+        document.getElementById(
+            "metricPendientes"
+        ).textContent = pendientes.length;
+
+        document.getElementById(
+            "metricCamino"
+        ).textContent = camino.length;
+
+        document.getElementById(
+            "metricVentas"
+        ).textContent = money(ventas);
+
+        if (lista.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        No hay pedidos registrados.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        tbody.innerHTML = lista.map(p => `
+
+            <tr>
+
+                <td>#MG-${p.id}</td>
+
+                <td>${escapeHtml(p.cliente)}</td>
+
+                <td>${estadoHtml(p.estado)}</td>
+
+                <td>${money(p.total)}</td>
+
+                <td>
+
+                    ${p.estado === "Pendiente" ? `
+                        <button
+                            class="primary"
+                            onclick="despacharPedido(${p.id})"
+                        >
+                            Despachar
+                        </button>
+                    ` : ""}
+
+                    ${p.estado === "En camino" ? `
+                        <button
+                            class="primary"
+                            onclick="entregarPedido(${p.id})"
+                        >
+                            Entregar
+                        </button>
+                    ` : ""}
+
+                    ${p.estado === "Entregado" ? `
+                        <span class="status">
+                            Finalizado
+                        </span>
+                    ` : ""}
+
+                    ${p.estado === "Cancelado" ? `
+                        <span class="status cancel">
+                            Cancelado
+                        </span>
+                    ` : ""}
+
+                </td>
+
+            </tr>
+
+        `).join("");
+
+    } catch (error) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="color:var(--danger)">
+                    ${escapeHtml(error.message)}
+                </td>
+            </tr>
+        `;
+    }
+}
+
+// ============================================
+// DESPACHAR PEDIDO
+// ============================================
+
+async function despacharPedido(id) {
+
+    const entrada = prompt(
+        "Tiempo estimado de entrega en minutos:",
+        "45"
+    );
+
+    if (entrada === null) return;
+
+    const tiempo = Number(entrada);
+
+    if (
+        !Number.isInteger(tiempo) ||
+        tiempo < 1 ||
+        tiempo > 1440
+    ) {
+        toast("Ingresa un tiempo válido");
+        return;
+    }
+
+    try {
+
+        await apiRequest(`/pedidos/${id}/despachar`, {
+            method: "PATCH",
+            body: JSON.stringify({
+                tiempoEstimadoMin: tiempo
+            })
+        });
+
+        toast("Pedido marcado como En camino");
+
+        await cargarPanelAdmin();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+// ============================================
+// ENTREGAR PEDIDO
+// ============================================
+
+async function entregarPedido(id) {
+
+    if (!confirm(
+        "¿Confirmas que el pedido fue entregado y pagado en efectivo?"
+    )) return;
+
+    try {
+
+        await apiRequest(`/pedidos/${id}/entregar`, {
+            method: "PATCH"
+        });
+
+        toast("Pedido entregado correctamente");
+
+        await cargarPanelAdmin();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+// ============================================
+// CONSULTAR NOTIFICACIONES
+// ============================================
+
+async function consultarNotificaciones() {
+
+    if (!currentUser || currentUser.rol !== "CLIENTE") {
+        return [];
+    }
+
+    try {
+        return await apiRequest("/pedidos/notificaciones");
+    } catch (error) {
+        console.error("Error consultando notificaciones:", error);
+        return [];
+    }
+}
+
+// ============================================
+// INICIALIZACIÓN
+// ============================================
+
+async function iniciarMercaGo() {
+
+    await restoreSession();
+
+    updateCartCount();
+
+    await cargarProductos();
+
+    const ultimo = Number(
+        sessionStorage.getItem("mercago_ultimo_pedido")
+    );
+
+    if (Number.isSafeInteger(ultimo) && ultimo > 0) {
+        pedidoSeleccionado = ultimo;
+    }
+
+    console.log("MercaGo inicializado correctamente");
+}
+
+iniciarMercaGo();
+
+</script>
+
+</body>
+</html>

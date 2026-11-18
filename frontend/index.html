@@ -1,0 +1,1158 @@
+﻿
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MercaGo - Tu supermercado en línea</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <style>#btnPanelAdministrador[hidden], #btnMiPerfil[hidden] { display: none !important; }</style>
+</head>
+
+<body>
+
+<!-- ============================================
+     ENCABEZADO PRINCIPAL
+============================================ -->
+
+<header class="topbar">
+
+    <div class="brand" onclick="go('home')">
+        <div class="logo">MG</div>
+        MercaGo
+    </div>
+
+    <nav class="nav">
+        <button data-page="home" onclick="go('home')">
+            Inicio
+        </button>
+
+        <button data-page="catalog" onclick="go('catalog')">
+            Productos
+        </button>
+
+        <button data-page="orders" onclick="go('orders')">
+            Mis pedidos
+        </button>
+
+        <button data-page="tracking" onclick="go('tracking')">
+            Seguimiento
+        </button>
+
+        <!-- Solo visible para clientes autenticados -->
+        <button id="btnMiPerfil"
+                type="button"
+                hidden>
+            👤 Mi perfil
+        </button>
+
+        <!-- Direcciones del cliente - Fase 17 -->
+        <button id="btnMisDirecciones" type="button" hidden>📍 Mis direcciones</button>
+
+        <!-- Solo visible para administradores autenticados -->
+        <button id="btnPanelAdministrador"
+                type="button"
+                hidden
+                onclick="go('admin')">
+            Admin
+        </button>
+    </nav>
+
+    <div class="actions">
+
+        <!-- CARRITO -->
+        <button
+            class="iconbtn"
+            type="button"
+            onclick="go('cart')"
+            title="Ver carrito"
+        >
+            🛒 <span id="cartCount">0</span>
+        </button>
+
+        <!-- NOTIFICACIONES -->
+        <button
+            id="btnNotificaciones"
+            class="iconbtn"
+            type="button"
+            onclick="abrirNotificaciones()"
+            title="Mis notificaciones"
+            aria-label="Abrir mis notificaciones"
+            aria-controls="panelNotificaciones"
+        >
+            🔔
+            <span
+                id="contadorNotificaciones"
+                class="contador-notificaciones"
+                style="display:none"
+            ></span>
+        </button>
+
+        <!-- INICIAR / CERRAR SESIÓN -->
+        <button
+            class="secondary"
+            id="sessionButton"
+            type="button"
+            onclick="sessionAction()"
+        >
+            Ingresar
+        </button>
+
+        <!-- COMPRAR -->
+        <button
+            class="primary"
+            type="button"
+            onclick="go('catalog')"
+        >
+            Comprar
+        </button>
+
+    </div>
+
+</header>
+
+<!-- ============================================
+     PANEL DE NOTIFICACIONES
+============================================ -->
+
+<div
+    id="panelNotificaciones"
+    class="panel-notificaciones"
+    hidden
+>
+    <div class="notificaciones-encabezado">
+
+        <h3>Mis notificaciones</h3>
+
+        <button
+            class="iconbtn"
+            type="button"
+            onclick="cerrarNotificaciones()"
+            aria-label="Cerrar notificaciones"
+        >
+            ✕
+        </button>
+
+    </div>
+
+    <div
+        id="listaNotificaciones"
+        class="lista-notificaciones"
+        aria-live="polite"
+    ></div>
+
+    <div class="notificaciones-pie">
+
+        <button
+            class="secondary"
+            type="button"
+            onclick="cargarNotificaciones()"
+        >
+            🔄 Actualizar
+        </button>
+
+        <button
+            class="secondary"
+            type="button"
+            onclick="marcarTodasLeidas()"
+        >
+            ✓ Marcar todas como leídas
+        </button>
+
+    </div>
+</div>
+
+<main>
+
+<!-- ============================================
+     PÁGINA DE INICIO
+============================================ -->
+
+<section id="home" class="page active">
+
+    <div class="container">
+
+        <div class="hero">
+
+            <div class="hero-main">
+
+                <div class="badge">
+                    📍 ENTREGAS EN MEDELLÍN
+                </div>
+
+                <h1>
+                    Tu supermercado,<br>
+                    estés donde estés.
+                </h1>
+
+                <p>
+                    Consulta productos, arma tu mercado y recibe
+                    tu pedido en casa. Todo desde una sola plataforma.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <button
+                        class="primary"
+                        onclick="go('catalog')"
+                    >
+                        Explorar productos
+                    </button>
+
+                    <button
+                        class="secondary"
+                        onclick="go('tracking')"
+                    >
+                        Seguir pedido
+                    </button>
+
+                </div>
+            </div>
+
+            <div class="hero-side">
+
+                <div class="search">
+                    🔎
+                    <input
+                        id="busquedaInicio"
+                        placeholder="Buscar productos o categorías"
+                        oninput="buscarDesdeInicio(this.value)"
+                    >
+                </div>
+
+                <div class="quick-grid">
+
+                    <div
+                        class="quick-card"
+                        onclick="filtrarCategoria('Frutas')"
+                    >
+                        <div class="emoji">🍎</div>
+                        <b>Frutas y verduras</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                    <div
+                        class="quick-card"
+                        onclick="filtrarCategoria('Lácteos')"
+                    >
+                        <div class="emoji">🥛</div>
+                        <b>Lácteos y huevos</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                    <div
+                        class="quick-card"
+                        onclick="filtrarCategoria('Bebidas')"
+                    >
+                        <div class="emoji">🥤</div>
+                        <b>Bebidas</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                    <div
+                        class="quick-card"
+                        onclick="filtrarCategoria('Aseo')"
+                    >
+                        <div class="emoji">🧼</div>
+                        <b>Aseo del hogar</b>
+                        <small>Ver categoría</small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORÍAS -->
+
+        <div class="section">
+
+            <div class="section-head">
+
+                <div>
+                    <h2>Categorías</h2>
+                    <p>Encuentra lo que necesitas más rápido.</p>
+                </div>
+
+                <button
+                    class="secondary"
+                    onclick="go('catalog')"
+                >
+                    Ver todas
+                </button>
+
+            </div>
+
+            <div class="categories">
+
+                <div
+                    class="category"
+                    onclick="filtrarCategoria('Frutas')"
+                >
+                    <div class="circle">🍎</div>
+                    <b>Frutas</b>
+                </div>
+
+                <div
+                    class="category"
+                    onclick="filtrarCategoria('Carnes')"
+                >
+                    <div class="circle">🥩</div>
+                    <b>Carnes</b>
+                </div>
+
+                <div
+                    class="category"
+                    onclick="filtrarCategoria('Lácteos')"
+                >
+                    <div class="circle">🥛</div>
+                    <b>Lácteos</b>
+                </div>
+
+                <div
+                    class="category"
+                    onclick="filtrarCategoria('Despensa')"
+                >
+                    <div class="circle">🍚</div>
+                    <b>Despensa</b>
+                </div>
+
+                <div
+                    class="category"
+                    onclick="filtrarCategoria('Bebidas')"
+                >
+                    <div class="circle">🥤</div>
+                    <b>Bebidas</b>
+                </div>
+
+                <div
+                    class="category"
+                    onclick="filtrarCategoria('Aseo')"
+                >
+                    <div class="circle">🧼</div>
+                    <b>Aseo</b>
+                </div>
+
+            </div>
+
+            <!-- PROMOCIÓN -->
+
+            <div class="promo">
+
+                <div>
+                    <h3 style="margin:0 0 6px">
+                        Tu mercado sin salir de casa
+                    </h3>
+
+                    <span style="color:var(--muted)">
+                        Compra en línea y paga en efectivo
+                        cuando recibas tu pedido.
+                    </span>
+                </div>
+
+                <button
+                    class="primary"
+                    onclick="go('catalog')"
+                >
+                    Comprar
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================
+     CATÁLOGO DE PRODUCTOS
+============================================ -->
+
+<section id="catalog" class="page">
+
+    <div class="container section">
+
+        <div class="section-head">
+
+            <div>
+                <h1>Catálogo de productos</h1>
+                <p>Productos disponibles para domicilio.</p>
+            </div>
+
+            <div class="search">
+                🔎
+                <input
+                    id="buscarProducto"
+                    placeholder="Buscar productos"
+                    oninput="renderProducts()"
+                >
+            </div>
+
+        </div>
+
+        <div style="margin-bottom:20px">
+
+            <button
+                class="secondary"
+                onclick="limpiarFiltros()"
+            >
+                Todas las categorías
+            </button>
+
+            <span
+                id="categoriaActual"
+                style="color:var(--muted);margin-left:12px"
+            ></span>
+
+        </div>
+
+        <!-- PRODUCTOS DESDE SQL SERVER -->
+
+        <div
+            id="productGrid"
+            class="products"
+        ></div>
+
+    </div>
+
+</section>
+
+<!-- ============================================
+     CARRITO DE COMPRAS
+============================================ -->
+
+<section id="cart" class="page">
+
+    <div class="container grid-2">
+
+        <div class="card">
+
+            <h2 style="margin-top:0">
+                Tu carrito
+            </h2>
+
+            <p
+                id="cartSubtitle"
+                style="color:var(--muted)"
+            >
+                0 productos agregados
+            </p>
+
+            <div id="cartItems"></div>
+
+        </div>
+
+        <div class="card">
+
+            <h3 style="margin-top:0">
+                Resumen
+            </h3>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <b id="subtotal">$0</b>
+            </div>
+
+            <div class="summary-row">
+                <span>Domicilio</span>
+                <b id="cartDomicilio">$0</b>
+            </div>
+
+            <div class="summary-row total">
+                <span>Total</span>
+                <b id="total">$0</b>
+            </div>
+
+            <p style="color:var(--muted);font-size:12px">
+                El valor definitivo se calcula con los
+                precios y existencias registrados en SQL Server.
+            </p>
+
+            <button
+                class="primary"
+                style="width:100%;margin-top:18px"
+                onclick="go('checkout')"
+            >
+                Continuar con el pedido
+            </button>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================
+     FINALIZAR COMPRA
+============================================ -->
+
+<section id="checkout" class="page">
+
+    <div class="container grid-2">
+
+        <div class="card">
+
+            <h2 style="margin-top:0">
+                Finalizar compra
+            </h2>
+
+            <p style="color:var(--muted)">
+                Completa tus datos de entrega.
+            </p>
+
+            <!-- NOMBRE -->
+
+            <div class="form-group">
+
+                <label for="checkoutNombre">
+                    Nombre completo
+                </label>
+
+                <input
+                    id="checkoutNombre"
+                    type="text"
+                    readonly
+                >
+
+            </div>
+
+            <!-- FASE 17: DIRECCIONES GUARDADAS -->
+            <div class="form-group">
+                <label for="checkoutDireccionGuardada">Usar una dirección guardada</label>
+                <select id="checkoutDireccionGuardada">
+                    <option value="">Escribir dirección manualmente</option>
+                </select>
+                <button type="button" class="secondary"
+                        id="checkoutAdministrarDirecciones" style="margin-top:8px">
+                    📍 Administrar mis direcciones
+                </button>
+            </div>
+
+            <!-- DIRECCIÓN -->
+
+            <div class="form-group">
+
+                <label for="checkoutDireccion">
+                    Dirección de entrega
+                </label>
+
+                <input
+                    id="checkoutDireccion"
+                    type="text"
+                    placeholder="Ejemplo: Calle 45 # 32-18, Medellín"
+                    maxlength="300"
+                    required
+                >
+
+            </div>
+
+            <!-- TELÉFONO -->
+
+            <div class="form-group">
+
+                <label for="checkoutTelefono">
+                    Teléfono
+                </label>
+
+                <input
+                    id="checkoutTelefono"
+                    type="tel"
+                    placeholder="Ejemplo: 3001234567"
+                    maxlength="40"
+                    required
+                >
+
+            </div>
+
+            <!-- PAGO -->
+
+            <h3>Forma de pago</h3>
+
+            <div class="radio selected">
+                ◉ Pago contra entrega en efectivo
+            </div>
+
+            <div class="notice">
+                El pago se realiza cuando recibas tu pedido.
+                No se aceptan pagos electrónicos en esta versión.
+            </div>
+
+        </div>
+
+        <!-- RESUMEN DEL PEDIDO -->
+
+        <div class="card">
+
+            <h3 style="margin-top:0">
+                Resumen del pedido
+            </h3>
+
+            <div class="summary-row">
+                <span>Productos</span>
+                <b id="checkoutSubtotal">$0</b>
+            </div>
+
+            <div class="summary-row">
+                <span>Domicilio</span>
+                <b id="checkoutDomicilio">$4.000</b>
+            </div>
+
+            <div class="summary-row total">
+                <span>Total</span>
+                <b id="checkoutTotal">$0</b>
+            </div>
+
+            <button
+                id="btnConfirmarPedido"
+                class="primary"
+                style="width:100%;margin-top:18px"
+                onclick="confirmOrder()"
+            >
+                Confirmar pedido
+            </button>
+
+            <p
+                id="checkoutMensaje"
+                class="error-message"
+                role="alert"
+            ></p>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================
+     PEDIDO CONFIRMADO
+============================================ -->
+
+<section id="confirmed" class="page">
+
+    <div class="container confirm">
+
+        <div class="confirm-box">
+
+            <div class="check">✓</div>
+
+            <h1>¡Pedido confirmado!</h1>
+
+            <p style="color:var(--muted)">
+                Tu pedido
+                <b id="numeroPedidoConfirmado">-</b>
+                fue registrado correctamente.
+            </p>
+
+            <div
+                class="card"
+                style="text-align:left;margin:28px 0"
+            >
+
+                <div class="summary-row">
+                    <span>Número de pedido</span>
+                    <b id="confirmNumero">-</b>
+                </div>
+
+                <div class="summary-row">
+                    <span>Estado</span>
+                    <span
+                        class="status"
+                        id="confirmEstado"
+                    >
+                        Pendiente
+                    </span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <b id="confirmSubtotal">$0</b>
+                </div>
+
+                <div class="summary-row">
+                    <span>Domicilio</span>
+                    <b id="confirmDomicilio">$0</b>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <b id="confirmTotal">$0</b>
+                </div>
+
+                <div class="summary-row">
+                    <span>Forma de pago</span>
+                    <b>Efectivo contra entrega</b>
+                </div>
+
+            </div>
+
+            <button
+                class="primary"
+                onclick="go('orders')"
+            >
+                Ver mis pedidos
+            </button>
+
+            <button
+                class="secondary"
+                onclick="go('catalog')"
+            >
+                Seguir comprando
+            </button>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================
+     HISTORIAL DE PEDIDOS
+============================================ -->
+
+<section id="orders" class="page">
+
+    <div class="container section">
+
+        <div class="section-head">
+
+            <div>
+                <h1>Mis pedidos</h1>
+                <p>Historial de compras y estado actual.</p>
+            </div>
+
+            <button
+                class="secondary"
+                onclick="cargarPedidos()"
+            >
+                Actualizar
+            </button>
+
+        </div>
+
+        <div class="card" style="overflow-x:auto">
+
+            <table class="orders-table">
+
+                <thead>
+                    <tr>
+                        <th>PEDIDO</th>
+                        <th>FECHA</th>
+                        <th>ESTADO</th>
+                        <th>TOTAL</th>
+                        <th>ACCIÓN</th>
+                    </tr>
+                </thead>
+
+                <tbody id="ordersBody">
+                    <tr>
+                        <td colspan="5">
+                            Cargando pedidos...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================
+     SEGUIMIENTO DE PEDIDOS
+============================================ -->
+
+<section id="tracking" class="page">
+
+    <div class="container section">
+
+        <div class="section-head">
+
+            <div>
+                <h1>Seguimiento del pedido</h1>
+
+                <p id="trackingNumero">
+                    Selecciona un pedido para consultar su estado.
+                </p>
+            </div>
+
+            <span
+                class="status"
+                id="trackingEstado"
+            >
+                Sin pedido
+            </span>
+
+        </div>
+
+        <div
+            class="card"
+            style="max-width:900px;margin:auto"
+        >
+
+            <h2 id="trackingTitulo">
+                Estado de tu domicilio
+            </h2>
+
+            <p
+                id="trackingDireccion"
+                style="color:var(--muted)"
+            ></p>
+
+            <div
+                class="timeline"
+                id="trackingTimeline"
+            >
+                <p>
+                    Abre la sección Mis pedidos y selecciona
+                    uno para consultar su seguimiento.
+                </p>
+            </div>
+
+            <div class="notice">
+                El estado se actualiza cuando el supermercado
+                registra los cambios del pedido.
+            </div>
+
+            <button
+                class="secondary"
+                onclick="actualizarSeguimiento()"
+            >
+                Actualizar seguimiento
+            </button>
+
+            <button
+                class="primary"
+                onclick="go('orders')"
+            >
+                Mis pedidos
+            </button>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================
+     INICIO DE SESIÓN
+============================================ -->
+
+<section id="login" class="page">
+
+    <div class="login-wrap">
+
+        <div class="login-card">
+
+            <div
+                class="logo"
+                style="margin-bottom:18px"
+            >
+                MG
+            </div>
+
+            <h2 style="margin:0">
+                Iniciar sesión
+            </h2>
+
+            <p style="color:var(--muted)">
+                Accede a tu cuenta MercaGo.
+            </p>
+
+            <div class="notice">
+                Tus credenciales se validan en SQL Server.
+                El acceso administrativo requiere permisos.
+            </div>
+
+            <form
+                id="loginForm"
+                onsubmit="login(event)"
+            >
+
+                <div class="form-group">
+
+                    <label for="loginCorreo">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        id="loginCorreo"
+                        type="email"
+                        placeholder="correo@ejemplo.com"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="loginContrasena">
+                        Contraseña
+                    </label>
+
+                    <input
+                        id="loginContrasena"
+                        type="password"
+                        placeholder="Tu contraseña"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                </div>
+
+                <p
+                    id="loginError"
+                    class="error-message"
+                    role="alert"
+                ></p>
+
+                <button
+                    id="loginSubmit"
+                    type="submit"
+                    class="primary"
+                    style="width:100%"
+                >
+                    Ingresar
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</section>
+
+<!-- ============================================
+     PANEL ADMINISTRATIVO
+============================================ -->
+
+<section id="admin" class="page">
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+
+            <div
+                class="brand"
+                style="margin-bottom:22px"
+            >
+                <div class="logo">MG</div>
+                Admin
+            </div>
+
+            <h4>GESTIÓN</h4>
+
+            <button
+                class="active"
+                onclick="cargarPanelAdmin()"
+            >
+                Resumen
+            </button>
+
+            <button
+                onclick="cargarPanelAdmin()"
+            >
+                Pedidos
+            </button>
+
+            <button onclick="go('catalog')">
+                Productos
+            </button>
+
+            
+<button
+    type="button"
+    onclick="abrirInventario()"
+>
+    📦 Inventario
+</button>
+
+<button
+    type="button"
+    onclick="abrirReporteVentas()"
+>
+    📈 Reporte de ventas
+</button>
+
+<button
+    type="button"
+    onclick="abrirAnalisisVentas()"
+>
+    📊 Análisis comparativo
+</button>
+
+<!-- ADMINISTRACIÓN DE COSTOS -->
+<button
+    type="button"
+    onclick="abrirCostos()"
+>
+    💰 Administración de costos
+</button>
+
+<button type="button" onclick="abrirRentabilidad()">
+    📊 Rentabilidad
+</button>
+
+
+            <button onclick="go('home')">
+                ← Volver a tienda
+            </button>
+
+        </aside>
+
+        <div class="admin-main">
+
+            <div class="section-head">
+
+                <div>
+                    <h1>Panel del supermercado</h1>
+
+                    <p>
+                        Gestión operativa de pedidos de MercaGo.
+                    </p>
+                </div>
+
+                <button
+                    class="primary"
+                    onclick="cargarPanelAdmin()"
+                >
+                    Actualizar
+                </button>
+
+            </div>
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <span>Pedidos hoy</span>
+                    <b id="metricPedidos">0</b>
+                </div>
+
+                <div class="metric">
+                    <span>Pendientes</span>
+                    <b id="metricPendientes">0</b>
+                </div>
+
+                <div class="metric">
+                    <span>En camino</span>
+                    <b id="metricCamino">0</b>
+                </div>
+
+                <div class="metric">
+                    <span>Ventas entregadas hoy</span>
+                    <b id="metricVentas">$0</b>
+                </div>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table class="table">
+
+                    <thead>
+                        <tr>
+                            <th>Pedido</th>
+                            <th>Cliente</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="adminOrdersBody">
+                        <tr>
+                            <td colspan="5">
+                                Cargando pedidos...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+</main>
+
+<!-- ============================================
+     PIE DE PÁGINA
+============================================ -->
+
+<footer class="footer">
+    MercaGo · Medellín · Proyecto académico ITM
+</footer>
+
+<!-- MENSAJES EMERGENTES -->
+<div id="toast" class="toast" role="status"></div>
+
+<!-- ============================================
+     ARCHIVOS JAVASCRIPT
+============================================ -->
+
+<!-- API REST -->
+<script src="./js/config/api.js" defer></script>
+
+<!-- AUTENTICACIÓN -->
+<script src="./modules/auth.js" defer></script>
+
+<!-- PRODUCTOS -->
+<script src="./js/modules/productos.js" defer></script>
+
+<!-- CARRITO -->
+<script src="./js/modules/carrito.js" defer></script>
+
+<!-- CHECKOUT -->
+<script src="./js/modules/checkout.js" defer></script>
+
+<!-- PEDIDOS -->
+<script src="./js/modules/pedidos.js" defer></script>
+
+<!-- SEGUIMIENTO -->
+<script src="./js/modules/seguimiento.js" defer></script>
+
+<!-- ADMINISTRACIÓN -->
+<script src="./js/modules/admin.js" defer></script>
+
+<!-- NOTIFICACIONES -->
+<script src="./js/modules/notificaciones.js" defer></script>
+
+<!-- INVENTARIO -->
+<script src="./js/modules/inventario.js" defer></script>
+
+<!-- HISTORIAL DE INVENTARIO -->
+<script src="./js/modules/historialInventario.js" defer></script>
+
+<!-- DASHBOARD DE INVENTARIO -->
+<script src="./js/modules/dashboardInventario.js" defer></script>
+
+<!-- REPORTE DE VENTAS -->
+<script src="./js/modules/reporteVentas.js" defer></script>
+
+<!-- ANÁLISIS COMPARATIVO DE VENTAS -->
+<script src="./js/modules/analisisVentas.js" defer></script>
+
+<!-- ADMINISTRACIÓN DE COSTOS -->
+<script src="./js/modules/costos.js" defer></script>
+
+<!-- HISTORIAL DE COSTOS - FASE 15 -->
+<script src="./js/modules/historialCostos.js" defer></script>
+
+<!-- RENTABILIDAD -->
+<script src="./js/modules/rentabilidad.js" defer></script>
+
+<!-- REGISTRO DE CLIENTES - FASE 16 -->
+<script src="./js/modules/registroCliente.js" defer></script>
+
+<!-- PERFIL DEL CLIENTE - FASE 16.2 -->
+<script src="./js/modules/miPerfil.js" defer></script>
+
+<!-- FASE 17: MIS DIRECCIONES -->
+<script src="./js/modules/direccionesCliente.js" defer></script>
+
+<!-- APLICACIÓN PRINCIPAL -->
+<script src="./js/app.js" defer></script>
+
+<!-- ACCESO AL PANEL ADMINISTRATIVO -->
+<script src="./js/modules/accesoAdmin.js" defer></script>
+
+</body>
+</html>
